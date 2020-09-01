@@ -11,8 +11,7 @@
     </div>
     <!-- 裁剪时半透明阴影 -->
     <div
-      class="cropper-drag-box"
-      :class="{ 'cropper-modal': isCrop }"
+      class="cropper-drag-box cropper-modal"
       :style="{ cursor: isToolbarShow && isCrop ? 'inherit' : 'crosshair' }"
       @mousedown.stop.prevent="onCropStart"
       @dblclick="onModalDoubleClick">
@@ -125,7 +124,7 @@ export default {
       // 是否显示canvas涂鸦
       showCanvas: false,
       // 颜色
-      toolbarColor: undefined,
+      toolbarColor: '#ff0000',
       // 字体大小
       toolbarFontSize: undefined,
       // 粗细
@@ -164,7 +163,7 @@ export default {
     // 工具栏位置样式控制
     toolbarStyle () {
       let styleObj = {}
-      let toolbarH = this.toolbarOptionsShow ? 77 : 39
+      let toolbarH = 39
       let toolbarW = 266
       let offsetY = this.container.height - this.cropperOffsetY - this.cropperHeight
       let offsetX = this.cropperOffsetX + this.cropperWidth

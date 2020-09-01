@@ -15,7 +15,7 @@
       <li
         @click="onToolItemClick(types[2])"
         :class="{ active: types[2] === activeType}">
-        <div class="arrow"></div>
+        <div class="upright"></div>
       </li>
       <li
         @click="onToolItemClick(types[3])"
@@ -25,7 +25,7 @@
       <li
         @click="onToolItemClick(types[4])"
         :class="{ active: types[4] === activeType}">
-        <div class="text">A</div>
+        <div class="type"></div>
       </li>
       <li class="divider"></li>
       <li @click="onOperationClick(operations[0])">
@@ -35,7 +35,7 @@
         <div class="save"></div>
       </li>
       <li @click="onOperationClick(operations[2])">
-        <div class="abandon">×</div>
+        <div class="abandon"></div>
       </li>
       <li @click="onOperationClick(operations[3])">
         <div class="complete"></div>
@@ -170,7 +170,8 @@ export default {
   methods: {
     // 画
     onToolItemClick (type) {
-      this.activeType = this.activeType === type ? '' : type
+      this.activeType = type
+
       if (this.activeType === 'text') {
         this.optionType = 'fontsize'
       } else {
@@ -224,16 +225,16 @@ export default {
 
 <style lang="less" scoped>
   @main-color: #1677bd;
-  @active-border-color: #999;
-  @w: 260px;
+  @active-border-color: #fff;
+  @w: 270px;
 
   .toolbar-wrap {
     .toolbar {
       display: flex;
       width: @w;
-      background: #deeeff;
-      border: 1px solid #4e99d2;
-      padding: 5px 2px;
+      background: #858585;
+      border: 1px solid #7d7d7d;
+      padding: 8px 12px;
       margin: 0;
       list-style: none;
 
@@ -250,11 +251,13 @@ export default {
 
         div {
           position: relative;
-          width: 16px;
-          height: 14px;
+          width: 18px;
+          height: 16px;
           box-sizing: border-box;
           text-align: center;
           line-height: 14px;
+          background-repeat: no-repeat; 
+          cursor: pointer;
         }
       }
 
@@ -267,14 +270,13 @@ export default {
       }
 
       .rect {
-        border: 1px solid #71a4e5;
-        background: #f2f6fa;
+        background-image: url(../assets/image/react.png);
+        margin-left: 1px;
       }
 
       .ellipse {
         border-radius: 50%;
-        border: 1px solid #71a4e5;
-        background: #f2f6fa;
+        border: 1px solid #fff;
       }
 
       .arrow {
@@ -306,7 +308,7 @@ export default {
       }
 
       .pencil {
-        background: url(../assets/image/pencil.png);
+        background-image: url(../assets/image/pencil.png);
       }
 
       .text {
@@ -315,42 +317,27 @@ export default {
       }
 
       .undo {
-        background: url(../assets/image/undo.png);
+        background-image: url(../assets/image/undo.png);
       }
 
       .save {
-        background: url(../assets/image/save.png);
+        background-image: url(../assets/image/save.png);
+      }
+
+      .type {
+        background-image: url(../assets/image/type.png);
       }
 
       .abandon {
-        font-size: 24px;
-        line-height: 12px;
-        font-weight: bold;
-        color: red;
-        cursor: default;
+        background-image: url(../assets/image/close.png);
       }
 
       .complete {
-        &::before,
-        &:after {
-          content: '';
-          position: absolute;
-          left: 0;
-          top: 0;
-          background: green;
-        }
+        background-image: url(../assets/image/right.png);
+      }
 
-        &::before {
-          width: 2px;
-          height: 9px;
-          transform: translate3d(3px, 4px, 0) rotate(-45deg);
-        }
-
-        &::after {
-          width: 2px;
-          height: 14px;
-          transform: translate3d(10px, 0, 0) rotate(45deg);
-        }
+      .upright {
+        background-image: url(../assets/image/upright.png);
       }
     }
 
@@ -358,8 +345,8 @@ export default {
       display: flex;
       width: @w;
       align-items: center;
-      background: #deeeff;
-      border: 1px solid #4e99d2;
+      background: #858585;
+      border: 1px solid #7d7d7d;
       padding: 0 2px;
       margin: 0;
       list-style: none;
@@ -380,11 +367,12 @@ export default {
         width: 24px;
         height: 24px;
         margin: 0 2px;
+        cursor: pointer;
 
         &:hover, &.active-dot {
-          border: 1px solid @active-border-color;
+          border: 1px solid #fff;
           border-radius: 2px;
-          background: #c2e6ff;
+          background: #fff;
         }
 
         &:after {
@@ -393,7 +381,7 @@ export default {
           left: 50%;
           top: 50%;
           border-radius: 50%;
-          background: @main-color;
+          background: #333;
           transform: translateX(-50%) translateY(-50%);
         }
 
@@ -422,7 +410,8 @@ export default {
         }
 
         span {
-          vertical-align: bottom;
+          color: #fff;
+          vertical-align: middle;
         }
       }
     }
@@ -440,6 +429,7 @@ export default {
       border: 1px solid @active-border-color;
       box-sizing: border-box;
       margin-right: 5px;
+      cursor: pointer;
     }
 
     .options-color {
@@ -456,6 +446,7 @@ export default {
         margin: 1px;
         box-sizing: border-box;
         border: 1px solid @active-border-color;
+        cursor: pointer;
 
         &:hover {
           border: 1px solid #fff;
