@@ -20,7 +20,8 @@
     <div
       v-show="isCrop"
       class="cropper-crop-box"
-      :style="cropperBoxStyle">
+      :style="cropperBoxStyle"
+      @dblclick="onDbClickCropBox">
       <!-- 截图框框图片 -->
       <div class="cropper-img">
         <img
@@ -54,9 +55,9 @@
           :optionsStyle="optionsStyle"
           @drawType="onDrawType"
           @undoDraw="onUndoDraw"
-          @saveDraw="onSaveDraw('saveImage')"
+          @saveDraw="onSaveDraw('save-image')"
           @abandonDraw="onAbandonDraw"
-          @completeDraw="onSaveDraw('copyImage')"></toolbar>
+          @completeDraw="onSaveDraw('copy-image')"></toolbar>
       </div>
       <!-- canvas涂鸦 -->
       <div v-show="showCanvas" class="full">
@@ -238,6 +239,9 @@ export default {
         this.clearCanvas()
       }
     },
+    onDbClickCropBox() {
+      this.onSaveDraw('copy-image')
+    },
     // 开始裁剪截图
     onCropStart (e) {
       // 不是鼠标左键
@@ -368,9 +372,8 @@ export default {
     async onSaveDraw (event) {
       try {
         this.showCanvas || await this.setCanvas()
-        let blobData = await this.draw.toImage(1)
-        console.log(blobData)
-        this.$emit(event, blobData)
+        let image = await this.draw.toImage(1)
+        this.$emit(event, image)
       } catch (err) {
         throw err
       }

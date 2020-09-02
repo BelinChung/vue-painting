@@ -229,6 +229,7 @@ export default {
   @w: 270px;
 
   .toolbar-wrap {
+    cursor: pointer;
     .toolbar {
       display: flex;
       width: @w;
@@ -257,7 +258,6 @@ export default {
           text-align: center;
           line-height: 14px;
           background-repeat: no-repeat; 
-          cursor: pointer;
         }
       }
 
@@ -367,7 +367,6 @@ export default {
         width: 24px;
         height: 24px;
         margin: 0 2px;
-        cursor: pointer;
 
         &:hover, &.active-dot {
           border: 1px solid #fff;
@@ -429,7 +428,6 @@ export default {
       border: 1px solid @active-border-color;
       box-sizing: border-box;
       margin-right: 5px;
-      cursor: pointer;
     }
 
     .options-color {

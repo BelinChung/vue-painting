@@ -428,7 +428,7 @@ export default class Painting {
     let nowLayer = this.layers.pop()
     nowLayer.destroy()
   }
-  // 转化成图片blob二进制
+  // 转化成base64图片
   toImage (quality = 1) {
     return new Promise((resolve, reject) => {
       let config = {
@@ -439,10 +439,8 @@ export default class Painting {
           el.height = img.height
           let ctx = el.getContext('2d')
           ctx.drawImage(img, 0, 0)
-          el.toBlob((blobFile) => {
-            el = null
-            resolve(blobFile)
-          }, 'image/jpeg', quality)
+          resolve(el.toDataURL('image/png', quality))
+          el = null
         }
       }
       this.stage.toImage(config)
