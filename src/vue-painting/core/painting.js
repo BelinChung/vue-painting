@@ -18,6 +18,7 @@ export default class Painting {
       color: '#000',
       lineWidth: 3
     }
+    this.squareEdgeLength = (Math.log(this.drawConfig.lineWidth) / Math.log(2) + 5) * 3
     this.stage.on('contentMousedown.proto', this.onStageDraw.bind(this))
     this.stage.on('canmouseover', () => {
       this.canTextOver = true
@@ -31,6 +32,7 @@ export default class Painting {
   // 设置画笔选项
   setDrawConfig (config) {
     this.drawConfig = Object.assign(this.drawConfig, config)
+    this.squareEdgeLength = (Math.log(this.drawConfig.lineWidth) / Math.log(2) + 5) * 3
   }
   // 画背景图
   drawImage (options) {
@@ -56,6 +58,9 @@ export default class Painting {
   // 画
   onStageDraw () {
     switch (this.drawConfig.type) {
+      case 'mosaic':
+        this.drawMosaic()
+        break
       case 'pencil':
         this.drawPencil()
         break
@@ -225,6 +230,49 @@ export default class Painting {
   }
   afterDraw () {
     this.stage.fire('canmouseover')
+  }
+  drawMosaic (options) {
+    this.beforeDraw()
+    // 如果是聚焦状态，点击其他位置则移开
+    if (this.isFocus) {
+      return this.textarea.blur()
+    }
+    var self = this
+    const layer = this._createLayer()
+    const { shape, canvas } = this._shapeFactory()
+    const ctx = canvas.getContext('2d')
+    var lastPos = this.stage.getPointerPosition()
+
+    layer.add(shape)
+    this.stage.add(layer)
+    this.stage.draw()
+
+    window.addEventListener('mousemove', _onDrawPencilMousemove)
+    window.addEventListener('mouseup', _onDrawPencilMouseup)
+
+    function _onDrawPencilMousemove (e) {
+      var pos = self.stage.getPointerPosition()
+      if (!pos) {
+        var offsetX = e.clientX - self.containerInfo.left
+        var offsetY = e.clientY - self.containerInfo.top
+        let width = self.containerInfo.width
+        let height = self.containerInfo.height
+        pos = {
+          x: offsetX >= width ? width : offsetX <= 0 ? 0 : offsetX,
+          y: offsetY >= height ? height : offsetY <= 0 ? 0 : offsetY
+        }
+      }
+      self._makeGrid(ctx, lastPos.x, lastPos.y, pos.x - lastPos.x, pos.y - lastPos.y)
+      // self._makeGrid(ctx, pos.x, pos.y, lastPos.x - pos.x, lastPos.y - pos.y)
+      lastPos = pos
+      layer.draw()
+    }
+    function _onDrawPencilMouseup () {
+      self.afterDraw()
+      self.layers.push(layer)
+      window.removeEventListener('mousemove', _onDrawPencilMousemove)
+      window.removeEventListener('mouseup', _onDrawPencilMouseup)
+    }
   }
   drawPencil (options) {
     this.beforeDraw()
@@ -524,6 +572,15 @@ export default class Painting {
     ctx.stroke()
     ctx.closePath()
   }
+  // 画矩形
+  _drawRect (ctx, x, y, size, color) {
+    ctx.beginPath()
+    ctx.lineWidth = size
+    ctx.fillStyle = color
+    ctx.fillRect(x, y, size, size)
+    ctx.stroke()
+  }
+
   // 涂鸦
   _pencil (ctx, startX, startY, endX, endY) {
     ctx.globalCompositeOperation = 'source-over'
@@ -532,6 +589,36 @@ export default class Painting {
     ctx.lineTo(endX, endY)
     ctx.closePath()
     ctx.stroke()
+  }
+  // 马赛克
+  _makeGrid (ctx, beginX, beginY, rectWidth, rectHight) {
+    const row = Math.round(rectWidth / this.squareEdgeLength) + 1
+    const column = Math.round(rectHight / this.squareEdgeLength) + 1
+    for (let i = 0; i < row * column; i++) {
+      let x = (i % row) * this.squareEdgeLength + beginX
+      let y = parseInt(i / row) * this.squareEdgeLength + beginY
+      this._setColor(ctx, x, y)
+    }
+  }
+  _setColor (ctx, x, y) {
+    let r = 0
+    let g = 0
+    let b = 0
+    const size = this.squareEdgeLength
+    const data = this.backgroundLayer.getContext().getImageData(x, y, size, size).data
+    for (let row = 0; row < size; row++) {
+      for (let col = 0; col < size; col++) {
+        r += data[((size * row) + col) * 4]
+        g += data[((size * row) + col) * 4 + 1]
+        b += data[((size * row) + col) * 4 + 2]
+      }
+    }
+
+    r = Math.round(r / (size * size))
+    g = Math.round(g / (size * size))
+    b = Math.round(b / (size * size))
+
+    this._drawRect(ctx, x, y, size, `rgb(${r}, ${g}, ${b})`)
   }
   // 箭头
   _arrow (ctx, startX, startY, endX, endY) {

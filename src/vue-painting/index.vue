@@ -239,7 +239,7 @@ export default {
         this.clearCanvas()
       }
     },
-    onDbClickCropBox() {
+    onDbClickCropBox () {
       this.onSaveDraw('copy-image')
     },
     // 开始裁剪截图

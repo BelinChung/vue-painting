@@ -25,6 +25,11 @@
       <li
         @click="onToolItemClick(types[4])"
         :class="{ active: types[4] === activeType}">
+        <div class="mosaic"></div>
+      </li>
+      <li
+        @click="onToolItemClick(types[5])"
+        :class="{ active: types[5] === activeType}">
         <div class="type"></div>
       </li>
       <li class="divider"></li>
@@ -66,20 +71,22 @@
             :value="item">{{ item }}</option>
         </select>
       </li>
-      <li class="divider"></li>
-      <!-- 颜色 -->
-      <li class="color-wrap">
-        <div
-          class="current-color"
-          :style="{ background: _color }"></div>
-        <ul class="options-color">
-          <li
-            v-for="item in colors"
-            :key="item"
-            @click="changeColor(item)"
-            :style="{ background: item }"></li>
-        </ul>
-      </li>
+      <template v-if="activeType !== 'mosaic'">
+        <li class="divider"></li>
+        <!-- 颜色 -->
+        <li class="color-wrap">
+          <div
+            class="current-color"
+            :style="{ background: _color }"></div>
+          <ul class="options-color">
+            <li
+              v-for="item in colors"
+              :key="item"
+              @click="changeColor(item)"
+              :style="{ background: item }"></li>
+          </ul>
+        </li>
+      </template>
     </ul>
   </div>
 </template>
@@ -119,7 +126,7 @@ export default {
   },
   data () {
     return {
-      types: ['rect', 'ellipse', 'arrow', 'pencil', 'text'], // 左侧操作
+      types: ['rect', 'ellipse', 'arrow', 'pencil', 'mosaic', 'text'], // 左侧操作
       operations: ['undo', 'save', 'abandon', 'complete'], // 右侧操作
       colors: COLORS, // 颜色
       fontSizes: FONTSIZE, // 字体大小
@@ -218,6 +225,11 @@ export default {
   watch: {
     activeType (val) {
       this.optionsShow = !!val
+      if (val === 'mosaic') {
+        this.changeDot(1)
+      } else {
+        this.changeDot(0)
+      }
     }
   }
 }
@@ -226,7 +238,7 @@ export default {
 <style lang="less" scoped>
   @main-color: #1677bd;
   @active-border-color: #fff;
-  @w: 270px;
+  @w: 300px;
 
   .toolbar-wrap {
     cursor: pointer;
@@ -311,6 +323,10 @@ export default {
         background-image: url(../assets/image/pencil.png);
       }
 
+      .mosaic {
+        background-image: url(../assets/image/mosaic.png);
+      }
+
       .text {
         font-size: 18px;
         color: #2359a2;
@@ -350,7 +366,7 @@ export default {
       padding: 0 2px;
       margin: 0;
       list-style: none;
-
+      min-height: 38px;
       & > li {
         box-sizing: border-box;
       }
