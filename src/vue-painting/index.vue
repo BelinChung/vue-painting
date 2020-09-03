@@ -540,7 +540,7 @@ export default {
   }
 
   #container {
-    cursor: crosshair;
+    cursor: default;
   }
 </style>
 <style>

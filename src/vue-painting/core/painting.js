@@ -574,6 +574,9 @@ export default class Painting {
   }
   // 画矩形
   _drawRect (ctx, x, y, size, color) {
+    // 修正画笔 X, Y 轴偏移
+    y = y - (size / 2)
+    x = x - (size / 2)
     ctx.beginPath()
     ctx.lineWidth = size
     ctx.fillStyle = color
