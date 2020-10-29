@@ -191,7 +191,6 @@ export default {
     }
   },
   created () {
-    window.addEventListener('keydown', this.onEscKeyDown, false)
     this.image = new Image()
     this.image.onload = () => {
       this.imgTrueWidth = this.image.width
@@ -210,11 +209,6 @@ export default {
     }
   },
   methods: {
-    onEscKeyDown (e) {
-      if (e.keyCode !== 27) return
-      // esc键退出
-      this.$emit('quit')
-    },
     // 初始化容器和canvas
     init () {
       const pos = this.$refs['drawer-container'].getBoundingClientRect()
