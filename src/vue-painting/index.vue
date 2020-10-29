@@ -12,7 +12,7 @@
     <!-- 裁剪时半透明阴影 -->
     <div
       class="cropper-drag-box cropper-modal"
-      :style="{ cursor: isToolbarShow && isCrop ? 'inherit' : 'crosshair' }"
+      :style="{ cursor: isToolbarShow && isCrop ? 'inherit' : 'inherit' }"
       @mousedown.stop.prevent="onCropStart"
       @dblclick="onModalDoubleClick">
     </div>
@@ -487,7 +487,6 @@ export default {
 
   .cropper-drag-box {
     .full;
-    cursor: crosshair;
   }
 
   .cropper-modal {
