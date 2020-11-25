@@ -481,17 +481,12 @@ export default class Painting {
     return new Promise((resolve, reject) => {
       let config = {
         quality,
-        callback (img) {
-          let el = document.createElement('canvas')
-          el.width = img.width
-          el.height = img.height
-          let ctx = el.getContext('2d')
-          ctx.drawImage(img, 0, 0)
-          resolve(el.toDataURL('image/png', quality))
-          el = null
+        pixelRatio: window.devicePixelRatio || 1,
+        callback (base64) {
+          resolve(base64)
         }
       }
-      this.stage.toImage(config)
+      this.stage.toDataURL(config)
     })
   }
   _setTextShape () {
